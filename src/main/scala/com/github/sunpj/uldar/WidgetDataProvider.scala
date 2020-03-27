@@ -35,7 +35,10 @@ trait WidgetDataProvider {
 
 /**
   * WidgetDataProvider for static data which means widget has no logic and sends back configuration json as
-  * render model. The aim of this provider is to facilitate of creating static widgets like [[PlainText]] [[Html]] etc
+  * render model.
+  *
+  * The aim of this provider is to facilitate of creating static widgets on frontend side, so StaticWidgetDataProvider
+  * can be used as a widget model storage
   *
   * @param id identity of widget which this WidgetDataProvider provides data for
   */
@@ -55,13 +58,9 @@ abstract class StaticWidgetDataProvider(val id: String) extends WidgetDataProvid
     * @return render model for widget
     */
   def processApiRequest(request: WidgetApiRequest): Future[JsValue] = {
-    Future.failed(new UnsupportedOperationException(s"Method is not supported for '$id' widget "))
+    Future.failed(new UnsupportedOperationException(s"API calls are not supported for static widget"))
   }
 }
-
-object PlainText extends StaticWidgetDataProvider("plaintext")
-object Html extends StaticWidgetDataProvider("html")
-object Markdown extends StaticWidgetDataProvider("markdown")
 
 /**
   * Registry of all known [[WidgetDataProvider]]s
