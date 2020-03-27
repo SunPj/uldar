@@ -1,8 +1,24 @@
 import Dependencies._
 
-ThisBuild / scalaVersion     := "2.13.1"
-ThisBuild / version          := "0.1.0-SNAPSHOT"
-ThisBuild / organization     := "com.github.sunpj"
+ThisBuild / name               := "uldar"
+ThisBuild / description        := "A tiny library to extend the application with CMS functionality"
+ThisBuild / version            := "0.1-SNAPSHOT"
+ThisBuild / organization       := "com.github.sunpj"
+ThisBuild / homepage           := Some(url("https://github.com/SunPj/uldar"))
+ThisBuild / scmInfo            := Some(ScmInfo(url("https://github.com/SunPj/uldar"), "https://github.com/SunPj/uldar.git"))
+ThisBuild / developers         := List(Developer("auldanov", "Aidar Uldanov", "root@sunsongs.ru", url("https://github.com/SunPj")))
+ThisBuild / licenses           += "GPLv2" -> url("https://www.gnu.org/licenses/gpl-2.0.html")
+ThisBuild / scalaVersion       := "2.13.1"
+ThisBuild / crossScalaVersions := Seq(scalaVersion.value, "2.11.12")
+
+// To sync with Maven central, you need to supply the following information:
+publishMavenStyle := true
+
+publishTo := sonatypePublishToBundle.value
+
+import xerial.sbt.Sonatype._
+sonatypeProfileName := "com.github.sunpj"
+sonatypeProjectHosting := Some(GitHubHosting("SunPj", "uldar", "root@sunsongs.ru"))
 
 lazy val root = (project in file("."))
   .settings(
