@@ -1,7 +1,7 @@
-package com.github.sunpj.uldar
+package com.github.sunpj.uldar.widget
 
 import javax.inject.Inject
-import play.api.libs.json.JsValue
+import play.api.libs.json.{Format, JsValue, Json}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -17,6 +17,10 @@ import scala.concurrent.{ExecutionContext, Future}
   * @see [[WidgetDataProvider]]
   */
 case class WidgetRenderingConfiguration(id: String, configuration: JsValue, nested: List[WidgetRenderingConfiguration])
+
+object WidgetRenderingConfiguration {
+  implicit val format: Format[WidgetRenderingConfiguration] = Json.format[WidgetRenderingConfiguration]
+}
 
 /**
   * Set of methods to process content
@@ -88,6 +92,24 @@ class WidgetRenderingConfigurationService[T] @Inject()(registry: WidgetDataProvi
       case ids => throw WidgetDataProviderNotFoundException(ids)
     }
   }
+
+  /**
+    * Returns [[WidgetRenderingConfiguration]] for given id
+    *
+    * @param id  WidgetRenderingConfiguration id
+    * @throws WidgetDataProviderNotFoundException if there is no WidgetDataProvider associated with widget id
+    * @return some WidgetRenderingConfiguration if there is existing one by given ID, otherwise None
+    */
+  def get(id: T): Future[Option[WidgetRenderingConfiguration]] = {
+    repository.get(id) map {
+      case Some(wrc) =>
+        getNonRegisteredWidgetIds(wrc) match {
+          case Nil => Some(wrc)
+          case ids => throw WidgetDataProviderNotFoundException(ids)
+        }
+      case None => None
+    }
+  }
 }
 
 case class WidgetDataProviderNotFoundException(widgetIds: List[String])
@@ -95,6 +117,8 @@ case class WidgetDataProviderNotFoundException(widgetIds: List[String])
 
 /**
   * Repository to store [[WidgetRenderingConfiguration]]s
+  *
+  * TODO what about using CRUD repo trait?
   *
   * @tparam T Type of identity of stored [[WidgetRenderingConfiguration]] entities
   */
@@ -124,4 +148,11 @@ trait WidgetRenderingRepository[T] {
     * @return whether content was updated or not. False means that no content is found by given ID
     */
   def update(id: T, wrc: WidgetRenderingConfiguration): Future[Boolean]
+
+  /**
+    * Retrieves [[WidgetRenderingConfiguration]] by given id
+    * @param id [[WidgetRenderingConfiguration]] id
+    * @return some WidgetRenderingConfiguration if there is existing one by given id, otherwise None
+    */
+  def get(id: T): Future[Option[WidgetRenderingConfiguration]]
 }

@@ -26,6 +26,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       scalaTest % Test,
       "javax.inject" % "javax.inject" % "1",
+      "org.slf4j" % "slf4j-api" % "1.7.9",
       "com.typesafe.play" %% "play-json" % "2.8.1"
     ) 
   )

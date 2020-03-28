@@ -1,4 +1,4 @@
-package com.github.sunpj.uldar
+package com.github.sunpj.uldar.widget
 
 import javax.inject.Inject
 import play.api.libs.json.{JsValue, Json}
